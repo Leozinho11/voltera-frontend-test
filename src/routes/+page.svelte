@@ -1,36 +1,24 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import Container from '$lib/container/Container.svelte';
+	import DebouncedInput from '$lib/debouncedInput/DebouncedInput.svelte';
+	import Header from '$lib/header/Header.svelte';
+	import ReturnText from '$lib/returnText/ReturnText.svelte';
+	import Title from '$lib/title/Title.svelte';
+	import type { AgeEstimate } from '../types/AgeEstimate';
 
-  export let data: {
-    searchedName: string
-    estimatedAge: number
-  }
+	export let data: AgeEstimate;
 
-  let name = data.searchedName
-
-  let timeout: ReturnType<typeof setTimeout>
-
-  function debouncedSearch (e: Event) {
-    name = (e.target as HTMLInputElement).value
-
-    clearTimeout(timeout)
-    timeout = setTimeout(() => {
-      goto(`?name=${encodeURI(name)}`, { replaceState: true })
-    }, 1000)
-  }
+	let name = data.name;
 </script>
 
-<h1>
-  Estimativa de idade
-</h1>
+<Header>Sistema de Estimativa de Idade</Header>
 
-<input
-  type="text"
-  placeholder=""
-  bind:value={name}
-  on:input={debouncedSearch}
-/>
+<Container>
+	<Title />
 
-{#if data.estimatedAge}
-  <p>{name}, sua idade estimada é de {data.estimatedAge}</p>
-{/if}
+	<DebouncedInput placeholder="Insira seu nome aqui" value={name} />
+
+	{#if data.age}
+		<ReturnText name={data.name} age={data.age} />
+	{/if}
+</Container>
